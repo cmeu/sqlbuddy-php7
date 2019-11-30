@@ -34,6 +34,7 @@ include INCLUDES_DIR . "class/Sql.php";
 define("VERSION_NUMBER", "1.3.3");
 define("PREVIEW_CHAR_SIZE", 75);
 
+$adapterList = array();
 $adapterList[] = "mysql";
 
 if (function_exists("sqlite_open") || (class_exists("PDO") && in_array("sqlite", PDO::getAvailableDrivers()))) {
@@ -147,6 +148,7 @@ if (isset($conn) && $conn->isConnected()) {
 
 		$charsetSql = $conn->listCharset();
 		if ($conn->isResultSet($charsetSql)) {
+			$charsetList = array();
 			while ($charsetRow = $conn->fetchAssoc($charsetSql)) {
 				$charsetList[] = $charsetRow['Charset'];
 			}
@@ -462,7 +464,7 @@ function splitQueryText($query) {
 	// i spent 3 days figuring out this line
 	preg_match_all("/(?>[^;']|(''|(?>'([^']|\\')*[^\\\]')))+;/ixU", $query, $matches, PREG_SET_ORDER);
 
-	$querySplit = "";
+	$querySplit = array();
 
 	foreach ($matches as $match) {
 		// get rid of the trailing semicolon
